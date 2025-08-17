@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine  # Используем актуальную версию
+    container_name: java-postgres
+    ports:
+      - "5433:5432"  # Изменяем порт для избежания конфликтов
+    environment:
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: ""  # Явно указываем пустой пароль
+      POSTGRES_DB: javadb
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sa -d javadb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
