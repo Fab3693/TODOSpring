@@ -1,14 +1,23 @@
 package ru.alex.TODOSpring.service;
 
-import ru.alex.TODOSpring.entity.Task;
+import ru.alex.TODOSpring.dto.TaskDto;
 
 import java.util.List;
 
-
 public interface TaskService {
-    List<Task> findAll ();
-    Task save(Task task);
-    Task findByTitle(String name);
-    Task update(Task task);
-    void deleteByTitle(String name);
+    List<TaskDto> findAll();
+    TaskDto save(TaskDto taskDto);
+    TaskDto findById(Integer id);
+    TaskDto update(Integer id, TaskDto taskDto);
+    boolean delete(Integer id);
 }
+
+    /*
+    {
+    "id": "1",
+    "status": "TODO",
+    "title": "first_task",
+    "description": "first_description",
+    "date": "2025-09-01"
+}
+*/

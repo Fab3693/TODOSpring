@@ -3,7 +3,6 @@ package ru.alex.TODOSpring.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import ru.alex.TODOSpring.entity.Status;
-
 import java.time.LocalDate;
 
 @Getter
