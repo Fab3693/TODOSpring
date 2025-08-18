@@ -5,10 +5,7 @@ import lombok.*;
 import ru.alex.TODOSpring.entity.Status;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
 public class TaskDto {
     private Integer id;

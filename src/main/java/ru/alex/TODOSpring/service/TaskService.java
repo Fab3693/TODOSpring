@@ -7,9 +7,9 @@ import java.util.List;
 public interface TaskService {
     List<TaskDto> findAll();
     TaskDto save(TaskDto taskDto);
-    TaskDto findById(Integer id);
-    TaskDto update(Integer id, TaskDto taskDto);
-    boolean delete(Integer id);
+    TaskDto findById(int id);
+    TaskDto update(int id, TaskDto taskDto);
+    boolean delete(int id);
 }
 
     /*
