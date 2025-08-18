@@ -39,12 +39,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto update(Integer id, TaskDto taskDto) {
         return repository.findById(id)
-                .map(existing -> {
-                    existing.setTitle(taskDto.getTitle());
-                    existing.setDescription(taskDto.getDescription());
-                    existing.setStatus(taskDto.getStatus());
-                    existing.setDate(taskDto.getDate());
-                    return convertToDto(repository.save(existing));
+                .map(task -> {
+                    task.setTitle(taskDto.getTitle());
+                    task.setDescription(taskDto.getDescription());
+                    task.setStatus(taskDto.getStatus());
+                    task.setDate(taskDto.getDate());
+                    return convertToDto(repository.save(task));
                 })
                 .orElse(null);
     }
