@@ -1,6 +1,5 @@
 package ru.alex.TODOSpring.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +25,7 @@ class TaskControllerTest {
     private MockMvc mockMvc;
     private TaskService service;
     private ObjectMapper objectMapper;
+    private TaskDto dto;
 
     @BeforeEach
     void setUp() {
@@ -33,17 +33,18 @@ class TaskControllerTest {
         TaskController controller = new TaskController(service);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         objectMapper = new ObjectMapper();
-    }
 
-    @Test
-    void findAll() throws Exception {
-        TaskDto dto = TaskDto.builder()
+        dto = TaskDto.builder()
                 .id(1)
                 .title("Test task")
                 .description("Test description")
                 .status(Status.TODO)
                 .date(LocalDate.of(2025, 9, 1))
                 .build();
+    }
+
+    @Test
+    void findAll() throws Exception {
         Mockito.when(service.findAll()).thenReturn(List.of(dto));
         mockMvc.perform(get("/api/v1/task"))
                 .andExpect(status().isOk())
@@ -51,50 +52,41 @@ class TaskControllerTest {
     }
 
     @Test
-    void save() throws Exception, JsonProcessingException {
-        TaskDto dto = TaskDto.builder()
-                .id(1)
-                .title("New task")
-                .description("New description")
-                .status(Status.TODO)
-                .date(LocalDate.of(2025, 9, 1))
-                .build();
+    void save() throws Exception {
         Mockito.when(service.save(any(TaskDto.class))).thenReturn(dto);
         mockMvc.perform(post("/api/v1/task")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("New task"));
+                .andExpect(jsonPath("$.title").value("Test task"));
     }
 
     @Test
     void findById() throws Exception {
-        TaskDto dto = TaskDto.builder()
-                .id(1)
+        TaskDto specificDto = TaskDto.builder()
                 .title("Found task")
-                .description("Found description")
                 .status(Status.IN_PROGRESS)
                 .date(LocalDate.of(2025, 9, 2))
                 .build();
-        Mockito.when(service.findById(1)).thenReturn(dto);
+
+        Mockito.when(service.findById(1)).thenReturn(specificDto);
         mockMvc.perform(get("/api/v1/task/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Found task"));
     }
 
     @Test
-    void update() throws Exception, JsonProcessingException {
-        TaskDto dto = TaskDto.builder()
-                .id(1)
+    void update() throws Exception {
+        TaskDto updatedDto = TaskDto.builder()
                 .title("Updated task")
-                .description("Updated description")
                 .status(Status.DONE)
                 .date(LocalDate.of(2025, 9, 3))
                 .build();
-        Mockito.when(service.update(eq(1), any(TaskDto.class))).thenReturn(dto);
+
+        Mockito.when(service.update(eq(1), any(TaskDto.class))).thenReturn(updatedDto);
         mockMvc.perform(put("/api/v1/task/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .content(objectMapper.writeValueAsString(updatedDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Updated task"));
     }

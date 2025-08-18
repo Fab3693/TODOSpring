@@ -16,15 +16,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceImplTest {
-
     @Mock
     private TaskRepository repository;
-
     @InjectMocks
     private TaskServiceImpl service;
 
@@ -41,7 +38,7 @@ class TaskServiceImplTest {
         when(repository.findAll()).thenReturn(List.of(task));
         List<TaskDto> result = service.findAll();
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getTitle()).isEqualTo("Test task");
+        assertThat(result.getFirst().getTitle()).isEqualTo("Test task");
     }
 
     @Test
