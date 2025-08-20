@@ -18,7 +18,6 @@ public class TaskController {
 
     @GetMapping
     public List<TaskDto> findAll() {
-        //todo
         return service.findAll();
     }
 
@@ -31,7 +30,9 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> findById(@PathVariable Integer id) {
         TaskDto task = service.findById(id);
-        if (task == null) return ResponseEntity.notFound().build();
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(task);
     }
 

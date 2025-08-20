@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.alex.TODOSpring.dto.TaskDto;
 import ru.alex.TODOSpring.entity.Task;
+import ru.alex.TODOSpring.mapper.TaskMapper;
 import ru.alex.TODOSpring.repository.TaskRepository;
 import ru.alex.TODOSpring.service.TaskService;
 
@@ -16,63 +17,40 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository repository;
+    private final TaskMapper mapper;
+
+    @Override
+    public TaskDto save(TaskDto taskDto) {
+        Task saved = repository.save(mapper.toEntity(taskDto));
+        return mapper.toDto(saved);
+    }
 
     @Override
     public List<TaskDto> findAll() {
         return repository.findAll()
                 .stream()
-                .map(this::convertToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public TaskDto save(TaskDto taskDto) {
-        Task saved = repository.save(convertToEntity(taskDto));
-        return convertToDto(saved);
+    public TaskDto findById(int id) {
+        return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     @Override
-    public TaskDto findById(Integer id) {
-        return repository.findById(id).map(this::convertToDto).orElse(null);
+    public TaskDto update(int id, TaskDto taskDto) {
+        Task task = repository.getReferenceById(id);
+        task.setTitle(taskDto.getTitle());
+        task.setDescription(taskDto.getDescription());
+        task.setStatus(taskDto.getStatus());
+        task.setDate(taskDto.getDate());
+        Task saved = repository.save(task);
+        return mapper.toDto(saved);
     }
 
     @Override
-    public TaskDto update(Integer id, TaskDto taskDto) {
-        return repository.findById(id)
-                .map(task -> {
-                    task.setTitle(taskDto.getTitle());
-                    task.setDescription(taskDto.getDescription());
-                    task.setStatus(taskDto.getStatus());
-                    task.setDate(taskDto.getDate());
-                    return convertToDto(repository.save(task));
-                })
-                .orElse(null);
-    }
-
-    @Override
-    public boolean delete(Integer id) {
-        if (!repository.existsById(id)) return false;
-        repository.deleteById(id);
-        return true;
-    }
-
-    private TaskDto convertToDto(Task task) {
-        return TaskDto.builder()
-                .id(task.getId())
-                .title(task.getTitle())
-                .description(task.getDescription())
-                .status(task.getStatus())
-                .date(task.getDate())
-                .build();
-    }
-
-    private Task convertToEntity(TaskDto dto) {
-        return Task.builder()
-                .id(dto.getId())
-                .title(dto.getTitle())
-                .description(dto.getDescription())
-                .status(dto.getStatus())
-                .date(dto.getDate())
-                .build();
+    public boolean delete(int id) {
+        return repository.deleteById(id) > 0;
     }
 }
