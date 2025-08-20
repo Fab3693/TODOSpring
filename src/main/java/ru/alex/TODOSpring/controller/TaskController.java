@@ -30,8 +30,9 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> findById(@PathVariable Integer id) {
         TaskDto task = service.findById(id);
-        if (task == null)
+        if (task == null) {
             return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(task);
     }
 
